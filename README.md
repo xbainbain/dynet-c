@@ -18,7 +18,7 @@ clang++ c_api.cc -I/path/to/dyent/ -L/path/to/dynet/build/dynet -ldynet -dynamic
 ```
 5. (Optional) Build the example:
 ```bash
-clang test.c -o test -lcdynet -L//Users/albain/Developer/ML/dynet/contrib/c
+clang test.c -o test -lcdynet -L/path/to/dynet-c
 ./test
 ```
 
