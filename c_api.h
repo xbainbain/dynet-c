@@ -9,7 +9,6 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
-#include <stdlib.h>
 
 // -----------------------------------------------------------------------------
 // init.h
@@ -22,7 +21,7 @@ void DN_DeleteDynetParams(DN_DynetParams* dp);
 void DN_InitializeFromParams(DN_DynetParams* dp);
 void DN_InitializeFromArgs(int argc, char** argv, bool shared_parameters);
 void DN_Cleanup();
-void DN_ResetRng(unsigned seed);
+void DN_ResetRng(unsigned int seed);
 
 
 // -----------------------------------------------------------------------------
@@ -34,14 +33,24 @@ typedef struct DN_ParameterInitIdentity DN_ParameterInitIdentity;
 typedef struct DN_ParameterInitGlorot DN_ParameterInitGlorot;
 typedef struct DN_ParameterInitSaxe DN_ParameterInitSaxe;
 typedef struct DN_ParameterInitFromFile DN_ParameterInitFromFile;
-typedef struct DN_ParameterInitFromVector DN_ParameterInitFromVector;
+typedef struct DN_ParameterInitFromArray  DN_ParameterInitFromArray;
+
+DN_ParameterInitNormal* DN_NewParameterInitNormal(float m, float v);
+DN_ParameterInitUniform* DN_NewParameterInitUniform(float l, float r);
+DN_ParameterInitConst* DN_NewParameterInitConst(float c);
+DN_ParameterInitIdentity* DN_NewParameterInitIdentity();
+DN_ParameterInitGlorot* DN_NewParameterInitGlorot(bool is_lookup, float gain);
+DN_ParameterInitSaxe* DN_NewParameterInitSaxe(float gain);
+DN_ParameterInitFromFile* DN_NewParameterInitFromFile(const char* f);
+DN_ParameterInitFromArray* DN_NewParameterInitFromArray(const float* a,
+                                                        unsigned int n);
 
 // -----------------------------------------------------------------------------
 // dim.h
 typedef struct DN_Dim DN_Dim;
 
 DN_Dim* DN_NewDim();
-DN_Dim* DN_NewDimFromArray(const long* a, size_t nb, unsigned int b);
+DN_Dim* DN_NewDimFromArray(const long* a, unsigned int nd, unsigned int b);
 void DN_DeleteDim(DN_Dim* dim);
 
 // -----------------------------------------------------------------------------
@@ -85,7 +94,7 @@ void DN_SetParameterValue(DN_Parameter* p, const float* val, int size);
 DN_ParameterCollection* DN_NewParameterCollection();
 void DN_DeleteParameterCollection(DN_ParameterCollection* pc);
 
-DN_Parameter* DN_AddParametersToCollection(DN_ParameterCollection* pc, DN_Dim* d, char* name);
+DN_Parameter* DN_AddParametersToCollection(DN_ParameterCollection* pc, DN_Dim* d, const char* name);
 
 // -----------------------------------------------------------------------------
 // expr.h
@@ -100,7 +109,7 @@ DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y);
 // -----------------------------------------------------------------------------
 // dynet.h
 // Since normally we won't modify CG directly, we don't expose ComputationGraph 
-// methods here except "forward" and  "backward" 
+// methods here except "forward" and "backward" 
 int DN_GetNumberOfActiveGraphs();
 unsigned DN_GetCurrentGraphId();
 

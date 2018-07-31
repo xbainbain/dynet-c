@@ -27,7 +27,7 @@ void DN_Cleanup() {
     dynet::cleanup();
 }
 
-void DN_ResetRng(unsigned seed) {
+void DN_ResetRng(unsigned int seed) {
     dynet::reset_rng(seed);
 }
 
@@ -68,7 +68,7 @@ DN_ParameterInitFromFile* DN_NewParameterInitFromFile(const char* f) {
 }
 
 DN_ParameterInitFromArray* DN_NewParameterInitFromArray(const float* a,
-                                                        size_t n) {
+                                                        unsigned int n) {
     dynet::ParameterInitFromVector pi{std::vector<float>(a, a + n)};
     return new DN_ParameterInitFromArray{pi};
 }
@@ -79,9 +79,9 @@ DN_Dim* DN_NewDim() {
     return new DN_Dim;
 }
 
-DN_Dim* DN_NewDimFromArray(const long a[], size_t n, unsigned int b) {
+DN_Dim* DN_NewDimFromArray(const long* a, size_t nd, unsigned int b) {
     // The caller should make sure that the array a is not empty
-    dynet::Dim dim{std::vector<long>(a, a + n), b};
+    dynet::Dim dim{std::vector<long>(a, a + nd), b};
     return new DN_Dim{dim};
 }
 
@@ -210,7 +210,7 @@ void DN_DeleteParameterCollection(DN_ParameterCollection* pc) {
     delete pc;
 }
 
-DN_Parameter* DN_AddParametersToCollection(DN_ParameterCollection* pc, DN_Dim* d, char* name) {
+DN_Parameter* DN_AddParametersToCollection(DN_ParameterCollection* pc, DN_Dim* d, const char* name) {
     dynet::Parameter p = pc->collection.add_parameters(d->dim, std::string(name));
     return new DN_Parameter{p};
 }
