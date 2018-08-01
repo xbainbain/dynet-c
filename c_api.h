@@ -11,7 +11,7 @@ extern "C" {
 #include <stdbool.h>
 
 // -----------------------------------------------------------------------------
-// init.h
+// init.h **Done!**
 
 typedef struct DN_DynetParams DN_DynetParams;
 
@@ -25,7 +25,8 @@ void DN_ResetRng(unsigned int seed);
 
 
 // -----------------------------------------------------------------------------
-// param-init.h
+// param-init.h **Done!**
+
 typedef struct DN_ParameterInitNormal DN_ParameterInitNormal;
 typedef struct DN_ParameterInitUniform DN_ParameterInitUniform;
 typedef struct DN_ParameterInitConst DN_ParameterInitConst;
@@ -47,6 +48,7 @@ DN_ParameterInitFromArray* DN_NewParameterInitFromArray(const float* a,
 
 // -----------------------------------------------------------------------------
 // dim.h
+
 typedef struct DN_Dim DN_Dim;
 
 DN_Dim* DN_NewDim();
@@ -55,6 +57,7 @@ void DN_DeleteDim(DN_Dim* dim);
 
 // -----------------------------------------------------------------------------
 // tensor.h
+
 typedef struct DN_Tensor DN_Tensor;
 
 //DN_Tensor* DN_NewTensor();
@@ -67,7 +70,8 @@ float* DN_TensorToScaleArray(DN_Tensor* t);
 void DN_PrintTensor(DN_Tensor* t);
 
 // -----------------------------------------------------------------------------
-// model.h
+// model.h **Baisc Done**
+
 typedef struct DN_Parameter DN_Parameter;
 typedef struct DN_LookupParameter DN_LookupParameter;
 typedef struct DN_ParameterCollection DN_ParameterCollection;
@@ -88,16 +92,81 @@ bool DN_IsParameterUpdated(DN_Parameter* p);
 void DN_ClipParameterInplace(DN_Parameter* p, float left, float right);
 void DN_SetParameterValue(DN_Parameter* p, const float* val, int size);
 
+
 // ** LookupParameter **
+void DN_ZeroLookupParameter(DN_LookupParameter* lp);
+const char* DN_GetLookupParameterFullName(DN_LookupParameter* lp);
+DN_Dim* DN_LookupParameterDim(DN_LookupParameter* lp);
+float DN_LookupParameterCurrentWeightDecay(DN_LookupParameter* lp);
+void DN_ScaleLookupParameter(DN_LookupParameter* lp, float s);
+void DN_ScaleLookupParameterGradient(DN_LookupParameter* lp, float s);
+void DN_SetLookupParameterUpdated(DN_LookupParameter* lp, bool b);
+bool DN_IsParameterUpdated(DN_Parameter* p);
+
 
 // **ParameterCollection**
 DN_ParameterCollection* DN_NewParameterCollection();
+//DN_ParameterCollection* DN_NewParameterCollectionWithWeightDecay(float weight_decay_lambda);
 void DN_DeleteParameterCollection(DN_ParameterCollection* pc);
 
-DN_Parameter* DN_AddParametersToCollection(DN_ParameterCollection* pc, DN_Dim* d, const char* name);
+DN_Parameter* DN_AddParametersToCollectionNormal(DN_ParameterCollection* pc,
+                                                 DN_Dim* d, DN_ParameterInitNormal* i,
+                                                 const char* name);
+DN_Parameter* DN_AddParametersToCollectionUniform(DN_ParameterCollection* pc,
+                                                  DN_Dim* d, DN_ParameterInitUniform* i,
+                                                  const char* name);
+DN_Parameter* DN_AddParametersToCollectionConst(DN_ParameterCollection* pc,
+                                                DN_Dim* d, DN_ParameterInitConst* i,
+                                                const char* name);
+DN_Parameter* DN_AddParametersToCollectionIdentity(DN_ParameterCollection* pc,
+                                                   DN_Dim* d, DN_ParameterInitIdentity* i,
+                                                   const char* name);
+DN_Parameter* DN_AddParametersToCollectionGlorot(DN_ParameterCollection* pc,
+                                                 DN_Dim* d, DN_ParameterInitGlorot* i,
+                                                 const char* name);
+DN_Parameter* DN_AddParametersToCollectionSaxe(DN_ParameterCollection* pc,
+                                               DN_Dim* d, DN_ParameterInitSaxe* i,
+                                               const char* name);
+
+DN_LookupParameter* DN_AddLookupParametersToCollectionNormal(DN_ParameterCollection* pc,
+                                                             unsigned int n,
+                                                             DN_Dim* d,
+                                                             DN_ParameterInitNormal* i,
+                                                             const char* name);
+DN_LookupParameter* DN_AddLookupParametersToCollectionUniform(DN_ParameterCollection* pc,
+                                                              unsigned int n,
+                                                              DN_Dim* d,
+                                                              DN_ParameterInitUniform* i,
+                                                              const char* name);
+DN_LookupParameter* DN_AddLookupParametersToCollectionConst(DN_ParameterCollection* pc,
+                                                            unsigned int n,
+                                                            DN_Dim* d, DN_ParameterInitConst* i,
+                                                            const char* name);
+DN_LookupParameter* DN_AddLookupParametersToCollectionIdentity(DN_ParameterCollection* pc,
+                                                               unsigned int n,
+                                                               DN_Dim* d, DN_ParameterInitIdentity* i,
+                                                               const char* name);
+DN_LookupParameter* DN_AddLookupParametersToCollectionGlorot(DN_ParameterCollection* pc,
+                                                             unsigned int n,
+                                                             DN_Dim* d, DN_ParameterInitGlorot* i,
+                                                             const char* name);
+DN_LookupParameter* DN_AddLookupParametersToCollectionSaxe(DN_ParameterCollection* pc,
+                                                           unsigned int n,
+                                                           DN_Dim* d, DN_ParameterInitSaxe* i,
+                                                           const char* name);
+
+float DN_GradientL2Norm(DN_ParameterCollection* pc);
+DN_ParameterCollection* DN_AddSubCollection(DN_ParameterCollection* pc,
+                                            const char* name,
+                                            float weight_decay_lambda);
+void DN_SetWeightDecay(DN_ParameterCollection* pc, float lambda);
+float DN_GetWeightDecayLambda(DN_ParameterCollection* pc);
+unsigned long DN_ParameterCollectionSize(DN_ParameterCollection* pc);
+const char* DN_GetParameterCollectionFullName(DN_ParameterCollection* pc);
 
 // -----------------------------------------------------------------------------
 // expr.h
+
 typedef struct DN_Expression DN_Expression;
 
 DN_Tensor* DN_GetExprValue(DN_Expression* e);
@@ -107,9 +176,10 @@ DN_Expression* DN_Logistic(DN_Expression* x);
 DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y);
 
 // -----------------------------------------------------------------------------
-// dynet.h
+// dynet.h **Basic Done!**
 // Since normally we won't modify CG directly, we don't expose ComputationGraph 
 // methods here except "forward" and "backward" 
+
 int DN_GetNumberOfActiveGraphs();
 unsigned DN_GetCurrentGraphId();
 
@@ -131,6 +201,7 @@ void DN_RevertCG(DN_ComputationGraph* cg);
 
 // -----------------------------------------------------------------------------
 // training.h
+
 typedef struct DN_SimpleSGDTrainer DN_SimpleSGDTrainer;
 typedef struct DN_CyclicalSGDTrainer DN_CyclicalSGDTrainer;
 typedef struct DN_MomentumSGDTrainer DN_MomentumSGDTrainer;

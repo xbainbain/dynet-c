@@ -1,7 +1,6 @@
 #ifndef DYNETC_C_API_INTERNAL_H_
 #define DYNETC_C_API_INTERNAL_H_
 
-#include "c_api.h"
 
 #include "dynet/init.h"
 #include "dynet/param-init.h"
@@ -80,6 +79,9 @@ struct DN_LookupParameter {
 };
 
 struct DN_ParameterCollection {
+    //DN_ParameterCollection();
+   // DN_ParameterCollection(float weight_decay_lambda);
+    
     dynet::ParameterCollection collection;
 };
 

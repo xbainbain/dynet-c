@@ -14,7 +14,7 @@ git clone git@github.com:xbainbain/dynet-c.git
 ```  
 4. Build dynet for c with following instruction:
 ```bash
-clang++ c_api.cc -I/path/to/dyent/ -L/path/to/dynet/build/dynet -ldynet -dynamiclib -o libcdynet.dylib -std=c++11
+clang++ c_api.cc -I/path/to/dynet/ -L/path/to/dynet/build/dynet -ldynet -dynamiclib -o libcdynet.dylib -std=c++11
 ```
 5. (Optional) Build the example:
 ```bash

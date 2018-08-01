@@ -1,7 +1,28 @@
-#include "c_api.h"
 #include "c_api_internal.h"
+#include "c_api.h"
+
 
 #include <vector>
+
+////////////////////////////////////////////////////////////////////////////////
+// Macros!
+
+#define ADD_PARAMETER(Kind) \
+    DN_Parameter* DN_AddParametersToCollection##Kind(DN_ParameterCollection* pc,            \
+                                                 DN_Dim* d, DN_ParameterInit##Kind* i,      \
+                                                 const char* name) {                        \
+    dynet::Parameter p = pc->collection.add_parameters(d->dim, i->init, std::string(name)); \
+    return new DN_Parameter{p};}
+
+#define ADD_LOOKUPPARAMETER(Kind) \
+    DN_LookupParameter* DN_AddLookupParametersToCollection##Kind(DN_ParameterCollection* pc,                 \
+                                                 unsigned int n,                                             \
+                                                 DN_Dim* d, DN_ParameterInit##Kind* i,                       \
+                                                 const char* name) {                                         \
+    dynet::LookupParameter lp = pc->collection.add_lookup_parameters(n, d->dim, i->init, std::string(name)); \
+    return new DN_LookupParameter{lp};}
+
+////////////////////////////////////////////////////////////////////////////////
 
 extern "C" {
 // -----------------------------------------------------------------------------
@@ -79,7 +100,7 @@ DN_Dim* DN_NewDim() {
     return new DN_Dim;
 }
 
-DN_Dim* DN_NewDimFromArray(const long* a, size_t nd, unsigned int b) {
+DN_Dim* DN_NewDimFromArray(const long* a, unsigned int nd, unsigned int b) {
     // The caller should make sure that the array a is not empty
     dynet::Dim dim{std::vector<long>(a, a + nd), b};
     return new DN_Dim{dim};
@@ -136,7 +157,7 @@ void DN_PrintTensor(DN_Tensor* t) {
 }
 
 // -----------------------------------------------------------------------------
-// model.h
+// model.h **Baisc Done**
 // ** Parameter **
 DN_Parameter* DN_NewParameter() {
     return new DN_Parameter;
@@ -147,8 +168,8 @@ void DN_DeleteParameter(DN_Parameter* p) {
 }
 
 const char* DN_GetParameterFullName(DN_Parameter* p) {
-    std::string name = p->param.get_fullname();
-    return name.c_str();
+    //Might be a mangle pointer! Be careful to use it!
+    return p->param.get_fullname().c_str();
 }
 
 void DN_ZeroParameter(DN_Parameter* p) {
@@ -199,21 +220,99 @@ void DN_SetParameterValue(DN_Parameter* p, const float* val, int size) {
 }
 
 // ** LookupParameter **
+void DN_ZeroLookupParameter(DN_LookupParameter* lp) {
+    lp->param.zero();
+}
 
+const char* DN_GetLookupParameterFullName(DN_LookupParameter* lp) {
+    //Might be a mangle pointer! Be careful to use it!
+    return lp->param.get_fullname().c_str();
+}
+
+DN_Dim* DN_LookupParameterDim(DN_LookupParameter* lp) {   
+    return new DN_Dim{lp->param.dim()};
+}
+
+float DN_LookupParameterCurrentWeightDecay(DN_LookupParameter* lp) {
+    return lp->param.current_weight_decay();
+}
+
+void DN_ScaleLookupParameter(DN_LookupParameter* lp, float s) {
+    lp->param.scale(s);
+}
+
+void DN_ScaleLookupParameterGradient(DN_LookupParameter* lp, float s) {
+    lp->param.scale_gradient(s);
+}
+
+void DN_SetLookupParameterUpdated(DN_LookupParameter* lp, bool b) {
+    lp->param.set_updated(b);
+}
+
+bool DN_IsParameterUpdated(DN_Parameter* p) {
+    return p->param.is_updated();
+}
 
 // ** ParameterCollection **
 DN_ParameterCollection* DN_NewParameterCollection() {
     return new DN_ParameterCollection;
 }
 
+/* There is a known bug in the c++ source file
+DN_ParameterCollection* DN_NewParameterCollectionWithWeightDecay(float weight_decay_lambda) {
+    dynet::ParameterCollection pc{weight_decay_lambda};
+    return new DN_ParameterCollection{pc};
+}
+*/
+
 void DN_DeleteParameterCollection(DN_ParameterCollection* pc) {
     delete pc;
 }
 
-DN_Parameter* DN_AddParametersToCollection(DN_ParameterCollection* pc, DN_Dim* d, const char* name) {
-    dynet::Parameter p = pc->collection.add_parameters(d->dim, std::string(name));
-    return new DN_Parameter{p};
+ADD_PARAMETER(Normal);
+ADD_PARAMETER(Uniform);
+ADD_PARAMETER(Const);
+ADD_PARAMETER(Identity);
+ADD_PARAMETER(Glorot);
+ADD_PARAMETER(Saxe);
+
+ADD_LOOKUPPARAMETER(Normal);
+ADD_LOOKUPPARAMETER(Uniform);
+ADD_LOOKUPPARAMETER(Const);
+ADD_LOOKUPPARAMETER(Identity);
+ADD_LOOKUPPARAMETER(Glorot);
+ADD_LOOKUPPARAMETER(Saxe);
+
+DN_ParameterCollection* DN_AddSubCollection(DN_ParameterCollection* pc,
+                                            const char* name,
+                                            float weight_decay_lambda) {
+    dynet::ParameterCollection _pc = pc->collection.add_subcollection(
+        std::string(name), weight_decay_lambda);
+    return new DN_ParameterCollection{_pc};
 }
+
+float DN_GradientL2Norm(DN_ParameterCollection* pc) {
+    return pc->collection.gradient_l2_norm();
+}
+
+void DN_SetWeightDecay(DN_ParameterCollection* pc, float lambda) {
+    pc->collection.set_weight_decay_lambda(lambda);
+}
+
+float DN_GetWeightDecayLambda(DN_ParameterCollection* pc) {
+    return pc->collection.get_weight_decay_lambda();
+}
+
+
+unsigned long DN_ParameterCollectionSize(DN_ParameterCollection* pc) {
+    return pc->collection.size();
+}
+
+const char* DN_GetParameterCollectionFullName(DN_ParameterCollection* pc) {
+    //Might be a mangle pointer! Be careful to use it!
+    return pc->collection.get_fullname().c_str();
+}
+
 
 // -----------------------------------------------------------------------------
 // dynet.h **Basic Done!**
@@ -269,7 +368,10 @@ DN_Expression* DN_LoadParamToCG(DN_ComputationGraph* cg, DN_Parameter* p) {
 }
 
 
-DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg, DN_Dim* dim, float* data, unsigned int num) {
+DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg,
+                               DN_Dim* dim,
+                               float* data,
+                               unsigned int num) {
     // This implementation has a known bug:change outside array can not change
     // the actual internal value since the new vector copy the data in array!
     // The other way to do it is wrap c++ std::vector into c.(Will do it later)
