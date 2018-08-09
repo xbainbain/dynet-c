@@ -56,20 +56,26 @@ void DN_DeleteParameterInitFromFile(DN_ParameterInitFromFile* i);
 void DN_DeleteParameterInitFromArray(DN_ParameterInitFromArray* i);
 
 // -----------------------------------------------------------------------------
-// dim.h
+// dim.h **Baisc Done**
 
 typedef struct DN_Dim DN_Dim;
 
 DN_Dim* DN_NewDim();
+
+// Create a Dim object from a array of dimensions 'a' and a batch size 'b'
+// 'nd' indicates the length of array
 DN_Dim* DN_NewDimFromArray(const long* a, unsigned int nd, unsigned int b);
-void DN_DeleteDim(DN_Dim* dim);
+
+void DN_DeleteDim(DN_Dim* d);
+
+// TODO: Other methods for Dim. Should all of them be exposed as c api?
+// Need advice and discussions.
 
 // -----------------------------------------------------------------------------
 // tensor.h
 
 typedef struct DN_Tensor DN_Tensor;
 
-//DN_Tensor* DN_NewTensor();
 void DN_DeleteTensor(DN_Tensor* t);
 
 DN_Dim* DN_TensorDim(DN_Tensor* t);

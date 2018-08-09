@@ -109,12 +109,7 @@ DN_Dim* DN_NewDimFromArray(const long* a, unsigned int nd, unsigned int b) {
     return new DN_Dim{dim};
 }
 
-void DN_DeleteDim(DN_Dim* dim) {
-    delete dim;
-}
-
-
-
+DELETE(Dim);
 
 // TODO: Other methods for Dim
 
@@ -132,9 +127,7 @@ unsigned int DN_SumDims(DN_Dim* d) {
 
 // -----------------------------------------------------------------------------
 // tensor.h
-void DN_DeleteTensor(DN_Tensor* t) {
-    delete t;
-}
+DELETE(Tensor);
 
 DN_Dim* DN_TensorDim(DN_Tensor* t) {
     return new DN_Dim{t->tensor.d};
