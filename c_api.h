@@ -13,6 +13,7 @@ extern "C" {
 // -----------------------------------------------------------------------------
 // init.h **Done!**
 
+// By default: "shared_parameters = false"
 void DN_InitializeFromArgs(int argc, char** argv, bool shared_parameters);
 
 void DN_Cleanup();
@@ -33,6 +34,7 @@ typedef struct DN_ParameterInitSaxe DN_ParameterInitSaxe;
 typedef struct DN_ParameterInitFromFile DN_ParameterInitFromFile;
 typedef struct DN_ParameterInitFromArray  DN_ParameterInitFromArray;
 
+// Create different kind initializers for parameters
 DN_ParameterInitNormal* DN_NewParameterInitNormal(float m, float v);
 DN_ParameterInitUniform* DN_NewParameterInitUniform(float l, float r);
 DN_ParameterInitConst* DN_NewParameterInitConst(float c);
@@ -42,6 +44,16 @@ DN_ParameterInitSaxe* DN_NewParameterInitSaxe(float gain);
 DN_ParameterInitFromFile* DN_NewParameterInitFromFile(const char* f);
 DN_ParameterInitFromArray* DN_NewParameterInitFromArray(const float* a,
                                                         unsigned int n);
+
+// Destructor for initializers of parameters
+void DN_DeleteParameterInitNormal(DN_ParameterInitNormal* i);
+void DN_DeleteParameterInitUniform(DN_ParameterInitUniform* i);
+void DN_DeleteParameterInitConst(DN_ParameterInitConst* i);
+void DN_DeleteParameterInitIdentity(DN_ParameterInitIdentity* i);
+void DN_DeleteParameterInitGlorot(DN_ParameterInitGlorot* i);
+void DN_DeleteParameterInitSaxe(DN_ParameterInitSaxe* i);
+void DN_DeleteParameterInitFromFile(DN_ParameterInitFromFile* i);
+void DN_DeleteParameterInitFromArray(DN_ParameterInitFromArray* i);
 
 // -----------------------------------------------------------------------------
 // dim.h

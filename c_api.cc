@@ -24,6 +24,7 @@
 
 #define DELETE(Name) \
     void DN_Delete##Name(DN_##Name* ptr) { \
+        std::cout << "delete" << std::endl; \
         delete ptr; \
     }
 
@@ -86,6 +87,15 @@ DN_ParameterInitFromArray* DN_NewParameterInitFromArray(const float* a,
     dynet::ParameterInitFromVector pi{std::vector<float>(a, a + n)};
     return new DN_ParameterInitFromArray{pi};
 }
+
+DELETE(ParameterInitNormal);
+DELETE(ParameterInitUniform);
+DELETE(ParameterInitConst);
+DELETE(ParameterInitIdentity);
+DELETE(ParameterInitGlorot);
+DELETE(ParameterInitSaxe);
+DELETE(ParameterInitFromFile);
+DELETE(ParameterInitFromArray);
 
 // -----------------------------------------------------------------------------
 // dim.h
