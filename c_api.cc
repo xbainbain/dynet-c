@@ -22,23 +22,16 @@
     dynet::LookupParameter lp = pc->collection.add_lookup_parameters(n, d->dim, i->init, std::string(name)); \
     return new DN_LookupParameter{lp};}
 
+#define DELETE(Name) \
+    void DN_Delete##Name(DN_##Name* ptr) { \
+        delete ptr; \
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 
 extern "C" {
 // -----------------------------------------------------------------------------
 // init.h **Done!**
-DN_DynetParams* DN_NewDynetParams() {
-    return new DN_DynetParams;
-}
-
-void DN_DeleteDynetParams(DN_DynetParams* dp) {
-    delete dp;
-}
-
-void DN_InitializeFromParams(DN_DynetParams* dp) {
-    dynet::initialize(dp->params);
-}
-
 void DN_InitializeFromArgs(int argc, char** argv, bool shared_parameters) {
     //It should by default "shared_parameters = false"
     dynet::initialize(argc, argv, shared_parameters);
@@ -249,8 +242,8 @@ void DN_SetLookupParameterUpdated(DN_LookupParameter* lp, bool b) {
     lp->param.set_updated(b);
 }
 
-bool DN_IsParameterUpdated(DN_Parameter* p) {
-    return p->param.is_updated();
+bool DN_IsLookupParameterUpdated(DN_LookupParameter* lp) {
+    return lp->param.is_updated();
 }
 
 // ** ParameterCollection **
@@ -372,14 +365,23 @@ DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg,
                                DN_Dim* dim,
                                float* data,
                                unsigned int num) {
-    // This implementation has a known bug:change outside array can not change
+    // This implementation has a known issue:change outside array can not change
     // the actual internal value since the new vector copy the data in array!
-    // The other way to do it is wrap c++ std::vector into c.(Will do it later)
+    // Try to create a new function like 'set' in Python!
     
     // Transforme array to vector.
     std::vector<float> data_v(data, data + num);
     dynet::Expression e = dynet::input(cg->graph, dim->dim, data_v);
     return new DN_Expression{e};
+}
+
+void DN_SetInputValueInCG(DN_Expression* e, float* vals, unsigned long num) {
+    // Don't know if it is the correct way to do that!!!
+    // Have a known bug!!! Don't know how to fix it now!
+    std::vector<float> vals_vec(vals, vals + num);
+    //std::cout << e->expr.pg->get_value(e->expr) << std::endl;
+    dynet::TensorTools::set_elements(e->expr.pg->get_value(e->expr), vals_vec);
+    //std::cout << e->expr.pg->get_value(e->expr) << std::endl;
 }
 
 
@@ -402,12 +404,20 @@ DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y) {
 
 // -----------------------------------------------------------------------------
 // training.h
+
+// Create new Stochastic gradient descent trainer.
 DN_SimpleSGDTrainer* DN_NewSimpleSGDTrainer(DN_ParameterCollection* pc, float lr) {
-    return new DN_SimpleSGDTrainer(pc, lr);
+    dynet::SimpleSGDTrainer trainer(pc->collection, lr);
+    return new DN_SimpleSGDTrainer{trainer};
 }
 
+DELETE(SimpleSGDTrainer);
+
+// Update parameters
 void DN_SimpleSGDUpdate(DN_SimpleSGDTrainer* trainer) {
     trainer->trainer.update();
 }
+
+// 
 
 } // end extern "C"

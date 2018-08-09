@@ -17,12 +17,6 @@
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
-// init.h
-struct DN_DynetParams {
-    dynet::DynetParams params;
-};
-
-// -----------------------------------------------------------------------------
 // param-init.h
 struct DN_ParameterInitNormal {
     dynet::ParameterInitNormal init;
@@ -100,8 +94,6 @@ struct DN_Expression {
 // -----------------------------------------------------------------------------
 // training.h
 struct DN_SimpleSGDTrainer {
-    DN_SimpleSGDTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
     dynet::SimpleSGDTrainer trainer;
 };
 

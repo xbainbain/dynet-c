@@ -13,14 +13,11 @@ extern "C" {
 // -----------------------------------------------------------------------------
 // init.h **Done!**
 
-typedef struct DN_DynetParams DN_DynetParams;
-
-DN_DynetParams* DN_NewDynetParams();
-void DN_DeleteDynetParams(DN_DynetParams* dp);
-
-void DN_InitializeFromParams(DN_DynetParams* dp);
 void DN_InitializeFromArgs(int argc, char** argv, bool shared_parameters);
+
 void DN_Cleanup();
+
+// Resets random number generators
 void DN_ResetRng(unsigned int seed);
 
 
@@ -101,7 +98,7 @@ float DN_LookupParameterCurrentWeightDecay(DN_LookupParameter* lp);
 void DN_ScaleLookupParameter(DN_LookupParameter* lp, float s);
 void DN_ScaleLookupParameterGradient(DN_LookupParameter* lp, float s);
 void DN_SetLookupParameterUpdated(DN_LookupParameter* lp, bool b);
-bool DN_IsParameterUpdated(DN_Parameter* p);
+bool DN_IsLookupParameterUpdated(DN_LookupParameter* lp);
 
 
 // **ParameterCollection**
@@ -168,8 +165,12 @@ const char* DN_GetParameterCollectionFullName(DN_ParameterCollection* pc);
 // expr.h
 
 typedef struct DN_Expression DN_Expression;
+typedef struct DN_ComputationGraph DN_ComputationGraph; //This is originaly in 'dynet.h'
 
 DN_Tensor* DN_GetExprValue(DN_Expression* e);
+DN_Expression* DN_LoadParamToCG(DN_ComputationGraph* cg, DN_Parameter* p);
+DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg, DN_Dim* dim, float* data, unsigned int num);
+void DN_SetInputValueInCG(DN_Expression* e, float* data, unsigned long num);
 
 DN_Expression* DN_Multiply(DN_Expression* x, DN_Expression* y);
 DN_Expression* DN_Logistic(DN_Expression* x);
@@ -183,13 +184,8 @@ DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y);
 int DN_GetNumberOfActiveGraphs();
 unsigned DN_GetCurrentGraphId();
 
-typedef struct DN_ComputationGraph DN_ComputationGraph;
-
 DN_ComputationGraph* DN_NewComputationGraph();
 void DN_DeleteComputationGraph(DN_ComputationGraph* cg);
-
-DN_Expression* DN_LoadParamToCG(DN_ComputationGraph* cg, DN_Parameter* p); //This is originaly in 'expr.h'
-DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg, DN_Dim* dim, float* data, unsigned int num); //This is originaly in 'expr.h'
 
 void DN_PrintGraphviz(DN_ComputationGraph* cg);
 void DN_Backward(DN_ComputationGraph* cg, DN_Expression* last, bool full); //'full' should be false by default
@@ -197,7 +193,6 @@ float DN_Forward(DN_ComputationGraph* cg, DN_Expression* last);
 unsigned DN_GetCGId(DN_ComputationGraph* cg);
 void DN_SetCGCheckPoint(DN_ComputationGraph* cg);
 void DN_RevertCG(DN_ComputationGraph* cg);
-
 
 // -----------------------------------------------------------------------------
 // training.h
