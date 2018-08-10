@@ -287,13 +287,13 @@ void DN_AdamTrainerUpdate(DN_AdamTrainer* trainer);
 void DN_AmsgradTrainerUpdate(DN_AmsgradTrainer* trainer);
 
 // Clip gradient
-void DN_SimpleSGDTrainerClipGradients(DN_SimpleSGDTrainer* trainer);
-void DN_CyclicalSGDTrainerClipGradients(DN_CyclicalSGDTrainer* trainer);
-void DN_MomentumSGDTrainerClipGradients(DN_MomentumSGDTrainer* trainer);
-void DN_AdagradTrainerClipGradients(DN_AdagradTrainer* trainer);
-void DN_RMSPropTrainerClipGradients(DN_RMSPropTrainer* trainer);
-void DN_AdamTrainerClipGradients(DN_AdamTrainer* trainer);
-void DN_AmsgradTrainerClipGradients(DN_AmsgradTrainer* trainer);
+float DN_SimpleSGDTrainerClipGradients(DN_SimpleSGDTrainer* trainer);
+float DN_CyclicalSGDTrainerClipGradients(DN_CyclicalSGDTrainer* trainer);
+float DN_MomentumSGDTrainerClipGradients(DN_MomentumSGDTrainer* trainer);
+float DN_AdagradTrainerClipGradients(DN_AdagradTrainer* trainer);
+float DN_RMSPropTrainerClipGradients(DN_RMSPropTrainer* trainer);
+float DN_AdamTrainerClipGradients(DN_AdamTrainer* trainer);
+float DN_AmsgradTrainerClipGradients(DN_AmsgradTrainer* trainer);
 
 
 #ifdef __cplusplus

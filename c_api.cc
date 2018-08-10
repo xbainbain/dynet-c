@@ -491,26 +491,26 @@ void DN_AmsgradTrainerUpdate(DN_AmsgradTrainer* trainer) {
     trainer->trainer.update();
 }
 
-void DN_SimpleSGDTrainerClipGradients(DN_SimpleSGDTrainer* trainer) {
-    trainer->trainer.clip_gradients();
+float DN_SimpleSGDTrainerClipGradients(DN_SimpleSGDTrainer* trainer) {
+    return trainer->trainer.clip_gradients();
 }
-void DN_CyclicalSGDTrainerClipGradients(DN_CyclicalSGDTrainer* trainer) {
-    trainer->trainer.clip_gradients();
+float DN_CyclicalSGDTrainerClipGradients(DN_CyclicalSGDTrainer* trainer) {
+    return trainer->trainer.clip_gradients();
 }
-void DN_MomentumSGDTrainerClipGradients(DN_MomentumSGDTrainer* trainer) {
-    trainer->trainer.clip_gradients();
+float DN_MomentumSGDTrainerClipGradients(DN_MomentumSGDTrainer* trainer) {
+    return trainer->trainer.clip_gradients();
 }
-void DN_AdagradTrainerClipGradients(DN_AdagradTrainer* trainer) {
-    trainer->trainer.clip_gradients();
+float DN_AdagradTrainerClipGradients(DN_AdagradTrainer* trainer) {
+    return trainer->trainer.clip_gradients();
 }
-void DN_RMSPropTrainerClipGradients(DN_RMSPropTrainer* trainer) {
-    trainer->trainer.clip_gradients();
+float DN_RMSPropTrainerClipGradients(DN_RMSPropTrainer* trainer) {
+    return trainer->trainer.clip_gradients();
 }
-void DN_AdamTrainerClipGradients(DN_AdamTrainer* trainer) {
-    trainer->trainer.clip_gradients();
+float DN_AdamTrainerClipGradients(DN_AdamTrainer* trainer) {
+    return trainer->trainer.clip_gradients();
 }
-void DN_AmsgradTrainerClipGradients(DN_AmsgradTrainer* trainer) {
-    trainer->trainer.clip_gradients();
+float DN_AmsgradTrainerClipGradients(DN_AmsgradTrainer* trainer) {
+    return trainer->trainer.clip_gradients();
 }
 
 
