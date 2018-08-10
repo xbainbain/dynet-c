@@ -213,7 +213,7 @@ void DN_SetCGCheckPoint(DN_ComputationGraph* cg);
 void DN_RevertCG(DN_ComputationGraph* cg);
 
 // -----------------------------------------------------------------------------
-// training.h
+// training.h **Done**
 
 typedef struct DN_SimpleSGDTrainer DN_SimpleSGDTrainer;
 typedef struct DN_CyclicalSGDTrainer DN_CyclicalSGDTrainer;
@@ -223,11 +223,77 @@ typedef struct DN_AdadeltaTrainer DN_AdadeltaTrainer;
 typedef struct DN_RMSPropTrainer DN_RMSPropTrainer;
 typedef struct DN_AdamTrainer DN_AdamTrainer;
 typedef struct DN_AmsgradTrainer DN_AmsgradTrainer;
-typedef struct DN_EGTrainer DN_EGTrainer;
 
-DN_SimpleSGDTrainer* DN_NewSimpleSGDTrainer(DN_ParameterCollection* pc, float lr);
-//It should by default "lr = 0.1"
-void DN_SimpleSGDUpdate(DN_SimpleSGDTrainer* trainer);
+// Create new Stochastic gradient descent trainer.
+// Default values: lr=0.1
+DN_SimpleSGDTrainer* DN_NewSimpleSGDTrainer(DN_ParameterCollection* pc,
+                                            float lr);
+
+// Cyclical learning rate SGD.
+// Default values: lr_min=0.01, lr_max=0.1, step_size=2000, gamma=1.0, edecay=0.0
+DN_CyclicalSGDTrainer* DN_NewCyclicalSGDTrainer(DN_ParameterCollection* pc,
+                                                float lr_min, float lr_max,
+                                                float step_size,
+                                                float gamma, float  edecay);
+
+// Stochastic gradient descent with momentum.
+// Default values: lr=0.01, mom=0.9
+DN_MomentumSGDTrainer* DN_NewMomentumSGDTrainer(DN_ParameterCollection* pc,
+                                                float lr, float mom);
+
+// Adagrad optimizer.
+// Default values: lr=0.1, eps=1e-20
+DN_AdagradTrainer* DN_NewAdagradTrainer(DN_ParameterCollection* pc,
+                                        float lr, float eps);
+
+// AdaDelta optimizer.
+// Default values: eps=1e-6, rho=0.95
+DN_AdadeltaTrainer* DN_NewAdadeltaTrainer(DN_ParameterCollection* pc,
+                                          float eps, float rho);
+
+// RMSProp optimizer.
+// Default values: lr=0.1, eps=1e-20, rho=0.95
+DN_RMSPropTrainer* DN_NewRMSPropTrainer(DN_ParameterCollection* pc, float lr,
+                                        float eps, float rho);
+
+// Adam optimizer.
+// Default values: lr=0.001, beta_1=0.9, beta_2=0.999, eps=1e-8
+DN_AdamTrainer* DN_NewAdamTrainer(DN_ParameterCollection* pc, float lr,
+                                  float beta_1, float beta_2, float eps);
+
+// AMSGrad optimizer.
+// Default values: lr=0.001, beta_1=0.9, beta_2=0.999, eps=1e-8
+DN_AmsgradTrainer* DN_NewAmsgradTrainer(DN_ParameterCollection* pc, float lr,
+                                        float beta_1, float beta_2, float eps);
+
+
+// Destructor for trainers
+void DN_DeleteSimpleSGDTrainer(DN_SimpleSGDTrainer* t);
+void DN_DeleteCyclicalSGDTrainer(DN_CyclicalSGDTrainer* t);
+void DN_DeleteMomentumSGDTrainer(DN_MomentumSGDTrainer* t);
+void DN_DeleteAdagradTrainer(DN_AdagradTrainer* t);
+void DN_DeleteAdadeltaTrainer(DN_AdadeltaTrainer* t);
+void DN_DeleteRMSPropTrainer(DN_RMSPropTrainer* t);
+void DN_DeleteAdamTrainer(DN_AdamTrainer* t);
+void DN_DeleteAmsgradTrainer(DN_AmsgradTrainer* t);
+
+// Update the parameters according to the appropriate update rule
+void DN_SimpleSGDTrainerUpdate(DN_SimpleSGDTrainer* trainer);
+void DN_CyclicalSGDTrainerUpdate(DN_CyclicalSGDTrainer* trainer);
+void DN_MomentumSGDTrainerUpdate(DN_MomentumSGDTrainer* trainer);
+void DN_AdagradTrainerUpdate(DN_AdagradTrainer* trainer);
+void DN_RMSPropTrainerUpdate(DN_RMSPropTrainer* trainer);
+void DN_AdamTrainerUpdate(DN_AdamTrainer* trainer);
+void DN_AmsgradTrainerUpdate(DN_AmsgradTrainer* trainer);
+
+// Clip gradient
+void DN_SimpleSGDTrainerClipGradients(DN_SimpleSGDTrainer* trainer);
+void DN_CyclicalSGDTrainerClipGradients(DN_CyclicalSGDTrainer* trainer);
+void DN_MomentumSGDTrainerClipGradients(DN_MomentumSGDTrainer* trainer);
+void DN_AdagradTrainerClipGradients(DN_AdagradTrainer* trainer);
+void DN_RMSPropTrainerClipGradients(DN_RMSPropTrainer* trainer);
+void DN_AdamTrainerClipGradients(DN_AdamTrainer* trainer);
+void DN_AmsgradTrainerClipGradients(DN_AmsgradTrainer* trainer);
 
 
 #ifdef __cplusplus

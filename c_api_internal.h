@@ -97,54 +97,32 @@ struct DN_SimpleSGDTrainer {
     dynet::SimpleSGDTrainer trainer;
 };
 
-/*
 struct DN_CyclicalSGDTrainer {
-    DN_CyclicalSGDTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
     dynet::CyclicalSGDTrainer trainer;
 };
 
 struct DN_MomentumSGDTrainer {
-    DN_MomentumSGDTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
     dynet::MomentumSGDTrainer trainer;
 };
 
 struct DN_AdagradTrainer {
-    DN_AdagradTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
     dynet::AdagradTrainer trainer;
 };
 
 struct DN_AdadeltaTrainer {
-    DN_AdadeltaTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
     dynet::AdadeltaTrainer trainer;
 };
 
 struct DN_RMSPropTrainer {
-    DN_RMSPropTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
     dynet::RMSPropTrainer trainer;
 };
 
 struct DN_AdamTrainer {
-    DN_AdamTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
     dynet::AdamTrainer trainer;
 };
 
 struct DN_AmsgradTrainer {
-    DN_AmsgradTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
     dynet::AmsgradTrainer trainer;
 };
-
-struct DN_EGTrainer {
-    DN_EGTrainer(DN_ParameterCollection* pc, float learning_rate)
-        : trainer(pc->collection, learning_rate){}
-    dynet::EGTrainer trainer;
-};
-*/
 
 #endif  // DYNETC_C_API_INTERNAL_H_

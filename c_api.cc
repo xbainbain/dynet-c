@@ -408,18 +408,111 @@ DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y) {
 // -----------------------------------------------------------------------------
 // training.h
 
-// Create new Stochastic gradient descent trainer.
-DN_SimpleSGDTrainer* DN_NewSimpleSGDTrainer(DN_ParameterCollection* pc, float lr) {
+DN_SimpleSGDTrainer* DN_NewSimpleSGDTrainer(DN_ParameterCollection* pc,
+                                            float lr) {
     dynet::SimpleSGDTrainer trainer(pc->collection, lr);
     return new DN_SimpleSGDTrainer{trainer};
 }
 
-DELETE(SimpleSGDTrainer);
+DN_CyclicalSGDTrainer* DN_NewCyclicalSGDTrainer(DN_ParameterCollection* pc,
+                                                float lr_min, float lr_max,
+                                                float step_size,
+                                                float gamma, float  edecay) {
+    dynet::CyclicalSGDTrainer trainer(pc->collection, lr_min, lr_max, 
+        step_size, gamma, edecay);
+    return new DN_CyclicalSGDTrainer{trainer};
+}
 
-// Update parameters
-void DN_SimpleSGDUpdate(DN_SimpleSGDTrainer* trainer) {
+DN_MomentumSGDTrainer* DN_NewMomentumSGDTrainer(DN_ParameterCollection* pc,
+                                                float lr, float mom) {
+    dynet::MomentumSGDTrainer trainer(pc->collection, lr, mom);
+    return new DN_MomentumSGDTrainer{trainer};
+}
+
+DN_AdagradTrainer* DN_NewAdagradTrainer(DN_ParameterCollection* pc,
+                                        float lr, float eps) {
+    dynet::AdagradTrainer trainer(pc->collection, lr, eps);
+    return new DN_AdagradTrainer{trainer};
+}
+
+DN_AdadeltaTrainer* DN_NewAdadeltaTrainer(DN_ParameterCollection* pc,
+                                          float eps, float rho) {
+    dynet::AdadeltaTrainer trainer(pc->collection, eps, rho);
+    return new DN_AdadeltaTrainer{trainer};
+}
+
+DN_RMSPropTrainer* DN_NewRMSPropTrainer(DN_ParameterCollection* pc, float lr,
+                                        float eps, float rho) {
+    dynet::RMSPropTrainer trainer(pc->collection, lr, eps, rho);
+    return new DN_RMSPropTrainer{trainer};
+}
+
+DN_AdamTrainer* DN_NewAdamTrainer(DN_ParameterCollection* pc, float lr,
+                                  float beta_1, float beta_2, float eps) {
+    dynet::AdamTrainer trainer(pc->collection, lr, beta_1, beta_2, eps);
+    return new DN_AdamTrainer{trainer};
+}
+
+DN_AmsgradTrainer* DN_NewAmsgradTrainer(DN_ParameterCollection* pc, float lr,
+                                        float beta_1, float beta_2, float eps) {
+    dynet::AmsgradTrainer trainer(pc->collection, lr, beta_1, beta_2, eps);
+    return new DN_AmsgradTrainer{trainer};
+}
+
+DELETE(SimpleSGDTrainer);
+DELETE(CyclicalSGDTrainer);
+DELETE(MomentumSGDTrainer);
+DELETE(AdagradTrainer);
+DELETE(AdadeltaTrainer);
+DELETE(RMSPropTrainer);
+DELETE(AdamTrainer);
+DELETE(AmsgradTrainer);
+
+// Use marcro if more methods need to be added
+void DN_SimpleSGDTrainerUpdate(DN_SimpleSGDTrainer* trainer) {
     trainer->trainer.update();
 }
+void DN_CyclicalSGDTrainerUpdate(DN_CyclicalSGDTrainer* trainer) {
+    trainer->trainer.update();
+}
+void DN_MomentumSGDTrainerUpdate(DN_MomentumSGDTrainer* trainer) {
+    trainer->trainer.update();
+}
+void DN_AdagradTrainerUpdate(DN_AdagradTrainer* trainer) {
+    trainer->trainer.update();
+}
+void DN_RMSPropTrainerUpdate(DN_RMSPropTrainer* trainer) {
+    trainer->trainer.update();
+}
+void DN_AdamTrainerUpdate(DN_AdamTrainer* trainer) {
+    trainer->trainer.update();
+}
+void DN_AmsgradTrainerUpdate(DN_AmsgradTrainer* trainer) {
+    trainer->trainer.update();
+}
+
+void DN_SimpleSGDTrainerClipGradients(DN_SimpleSGDTrainer* trainer) {
+    trainer->trainer.clip_gradients();
+}
+void DN_CyclicalSGDTrainerClipGradients(DN_CyclicalSGDTrainer* trainer) {
+    trainer->trainer.clip_gradients();
+}
+void DN_MomentumSGDTrainerClipGradients(DN_MomentumSGDTrainer* trainer) {
+    trainer->trainer.clip_gradients();
+}
+void DN_AdagradTrainerClipGradients(DN_AdagradTrainer* trainer) {
+    trainer->trainer.clip_gradients();
+}
+void DN_RMSPropTrainerClipGradients(DN_RMSPropTrainer* trainer) {
+    trainer->trainer.clip_gradients();
+}
+void DN_AdamTrainerClipGradients(DN_AdamTrainer* trainer) {
+    trainer->trainer.clip_gradients();
+}
+void DN_AmsgradTrainerClipGradients(DN_AmsgradTrainer* trainer) {
+    trainer->trainer.clip_gradients();
+}
+
 
 // 
 
