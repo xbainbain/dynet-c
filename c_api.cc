@@ -28,6 +28,27 @@
         delete ptr; \
     }
 
+#define OP_UNARY(Name, Call) \
+    DN_Expression* DN_##Name(DN_Expression* x) { \
+        dynet::Expression e = dynet::Call(x->expr); \
+        return new DN_Expression{e}; \
+    }
+
+#define OP_BINARY(Name, Call) \
+    DN_Expression* DN_##Name(DN_Expression* x, DN_Expression* y) { \
+        dynet::Expression e = dynet::Call(x->expr, y->expr); \
+        return new DN_Expression{e}; \
+    }
+
+#define OP_LIST(Nmae, Call) \
+    DN_Expression* DN_##Name(DN_Expression* xs[], int num) { \
+    std::vector<dynet::Expression> vx; \
+    for (int i = 0; i < num; i++) { \
+        vx.push_back(xs[i]->expr); \
+    } \
+    return new DN_Expression{dynet::Call(vx)}; \
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 extern "C" {
@@ -159,9 +180,7 @@ DN_Parameter* DN_NewParameter() {
     return new DN_Parameter;
 }
 
-void DN_DeleteParameter(DN_Parameter* p) {
-    delete p;
-}
+DELETE(Parameter);
 
 const char* DN_GetParameterFullName(DN_Parameter* p) {
     //Might be a mangle pointer! Be careful to use it!
@@ -261,9 +280,7 @@ DN_ParameterCollection* DN_NewParameterCollectionWithWeightDecay(float weight_de
 }
 */
 
-void DN_DeleteParameterCollection(DN_ParameterCollection* pc) {
-    delete pc;
-}
+DELETE(ParameterCollection);
 
 ADD_PARAMETER(Normal);
 ADD_PARAMETER(Uniform);
@@ -324,9 +341,7 @@ DN_ComputationGraph* DN_NewComputationGraph() {
     return new DN_ComputationGraph;
 }
 
-void DN_DeleteComputationGraph(DN_ComputationGraph* cg) {
-    delete cg;
-}
+DELETE(ComputationGraph);
 
 void DN_PrintGraphviz(DN_ComputationGraph* cg) {
     cg->graph.print_graphviz();
@@ -388,21 +403,149 @@ void DN_SetInputValueInCG(DN_Expression* e, float* vals, unsigned long num) {
 }
 
 
+////////////////////////////////////////////////
+// Arithmetic operations                      //
+////////////////////////////////////////////////
+
+DN_Expression* DN_Negate(DN_Expression* x) {
+    dynet::Expression e = -(x->expr);
+    return new DN_Expression{e};
+}
+
+DN_Expression* DN_Add(DN_Expression* x, DN_Expression* y) {
+    dynet::Expression e = x->expr + y->expr;
+    return new DN_Expression{e};
+}
+
+DN_Expression* DN_AddWithScalar(DN_Expression* x, float y) {
+    dynet::Expression e = x->expr + y;
+    return new DN_Expression{e};
+}
+
+DN_Expression* DN_Subtract(DN_Expression* x, DN_Expression* y) {
+    dynet::Expression e = x->expr - y->expr;
+    return new DN_Expression{e};
+}
+
+DN_Expression* DN_SubtractFromScalar(float x, DN_Expression* y) {
+    dynet::Expression e = x - y->expr;
+    return new DN_Expression{e};
+}
+
+DN_Expression* DN_SubtractByScalar(DN_Expression* x, float y) {
+    dynet::Expression e = x->expr - y;
+    return new DN_Expression{e};
+}
+
 DN_Expression* DN_Multiply(DN_Expression* x, DN_Expression* y) {
     dynet::Expression e = x->expr * y->expr;
     return new DN_Expression{e};
 }
 
-DN_Expression* DN_Logistic(DN_Expression* x) {
-    dynet::Expression e = dynet::logistic(x->expr);
+DN_Expression* DN_MultiplyWithScalar(DN_Expression* x, float y) {
+    dynet::Expression e = x->expr * y;
     return new DN_Expression{e};
 }
+
+DN_Expression* DN_Divide(DN_Expression* x, DN_Expression* y) {
+    dynet::Expression e = x->expr / y->expr;
+    return new DN_Expression{e};
+}
+
+DN_Expression* DN_DivideByScalar(DN_Expression* x, float y) {
+    dynet::Expression e = x->expr / y;
+    return new DN_Expression{e};
+}
+
+OP_LIST(AffineTransform, affine_transform)
+OP_LIST(Sum, sum)
+OP_UNARY(SumElems, sum_elems)
+
+DN_Expression* DN_MomentElems(DN_Expression* x, unsigned int r) {
+    return new DN_Expression{dynet::moment_elems(x->expr, r)};
+}
+
+DN_Expression* DN_MomentBatches(DN_Expression* x, unsigned int r) {
+    return new DN_Expression{dynet::moment_batches(x->expr, r)};
+}
+
+OP_UNARY(MeanElems, mean_elems)
+OP_UNARY(StdElems, std_elems)
+OP_UNARY(SumBatchs, sum_batches)
+OP_UNARY(MeanBatches, mean_batches)
+OP_UNARY(StdBatches, std_batches)
+
+DN_Expression* DN_Cumsum(DN_Expression* x, unsigned int d) {
+    return new DN_Expression{dynet::cumsum(x->expr, d)};
+}
+
+//............
+OP_LIST(Average, average)
+OP_UNARY(Sqrt, sqrt)
+OP_UNARY(Abs, abs)
+OP_UNARY(Erf, erf)
+OP_UNARY(Asin, asin)
+OP_UNARY(Acos, acos)
+OP_UNARY(Atan, atan)
+OP_UNARY(Sin, sin)
+OP_UNARY(Cos, cos)
+OP_UNARY(Tan, tan)
+OP_UNARY(Sinh, sinh)
+OP_UNARY(Cosh, cosh)
+OP_UNARY(Tanh, tanh)
+OP_UNARY(Asinh, asinh)
+OP_UNARY(Acosh, acosh)
+OP_UNARY(Atanh, atanh)
+OP_UNARY(Exp, exp)
+OP_UNARY(Square, square)
+OP_UNARY(Cube, cube)
+OP_UNARY(LogSigmoid, log_sigmoid)
+OP_UNARY(Lgamma, lgamma)
+OP_UNARY(Log, log)
+OP_UNARY(Logistic, logistic)
+OP_UNARY(Rectify, rectify)
+OP_UNARY(Selu, selu)
+
+DN_Expression* DN_Elu(DN_Expression* x, float alpha) {
+    return new DN_Expression{dynet::elu(x->expr, alpha)};
+}
+
+DN_Expression* DN_Silu(DN_Expression* x, float beta) {
+    return new DN_Expression{dynet::silu(x->expr, beta)};
+}
+
+OP_UNARY(Softsign, softsign)
+OP_BINARY(Pow, pow)
+OP_BINARY(Min, min)
+OP_BINARY(Max, max)
+OP_LIST(MaxArray, max)
+OP_BINARY(DotProduct, dot_product)
+OP_BINARY(CircConv, circ_conv)
+OP_BINARY(CircCorr, circ_corr)
+OP_BINARY(Cmult, cmult)
+OP_BINARY(Cdiv, cdiv)
+OP_BINARY(ColwiseAdd, colwise_add)
+
+
+////////////////////////////////////////////////
+// Probability/loss operations                //
+////////////////////////////////////////////////
+
+DN_Expression* DN_Softmax(DN_Expression* x, unsigned int d) {
+    return new DN_Expression{dynet::softmax(x->expr, d)};
+}
+
+DN_Expression* DN_LogsumexpDim(DN_Expression* x, unsigned int d) {
+    return new DN_Expression{dynet::logsumexp_dim(x->expr, d)};
+}
+
+OP_UNARY(LogSoftmax, log_softmax)
+OP_LIST(Logsumexp, logsumexp)
 
 DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y) {
     dynet::Expression e = dynet::binary_log_loss(x->expr, y->expr);
     return new DN_Expression{e};
 }
-
 
 
 // -----------------------------------------------------------------------------

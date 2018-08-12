@@ -194,6 +194,81 @@ DN_Expression* DN_Multiply(DN_Expression* x, DN_Expression* y);
 DN_Expression* DN_Logistic(DN_Expression* x);
 DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y);
 
+////////////////////////////////////////////////
+// Arithmetic operations                      //
+////////////////////////////////////////////////
+
+DN_Expression* DN_Negate(DN_Expression* x);
+DN_Expression* DN_Add(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_AddWithScalar(DN_Expression* x, float y);
+DN_Expression* DN_Subtract(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_SubtractFromScalar(float x, DN_Expression* y);
+DN_Expression* DN_SubtractByScalar(DN_Expression* x, float y);
+DN_Expression* DN_Multiply(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_MultiplyWithScalar(DN_Expression* x, float y);
+DN_Expression* DN_Divide(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_DivideByScalar(DN_Expression* x, float y);
+DN_Expression* DN_AffineTransform(DN_Expression* xs[], int num);
+DN_Expression* DN_Sum(DN_Expression* xs[], int num);
+DN_Expression* DN_SumElems(DN_Expression* x);
+DN_Expression* DN_MomentElems(DN_Expression* x, unsigned int r);
+DN_Expression* DN_MomentBatches(DN_Expression* x, unsigned int r);
+DN_Expression* DN_MeanElems(DN_Expression* x);
+DN_Expression* DN_StdElems(DN_Expression* x);
+DN_Expression* DN_SumBatchs(DN_Expression* x);
+DN_Expression* DN_MeanBatches(DN_Expression* x);
+DN_Expression* DN_StdBatches(DN_Expression* x);
+DN_Expression* DN_Cumsum(DN_Expression* x, unsigned int d);
+//............
+
+DN_Expression* DN_Average(DN_Expression* xs[], int num);
+DN_Expression* DN_Sqrt(DN_Expression* x);
+DN_Expression* DN_Abs(DN_Expression* x);
+DN_Expression* DN_Erf(DN_Expression* x);
+DN_Expression* DN_Asin(DN_Expression* x);
+DN_Expression* DN_Acos(DN_Expression* x);
+DN_Expression* DN_Atan(DN_Expression* x);
+DN_Expression* DN_Sin(DN_Expression* x);
+DN_Expression* DN_Cos(DN_Expression* x);
+DN_Expression* DN_Tan(DN_Expression* x);
+DN_Expression* DN_Sinh(DN_Expression* x);
+DN_Expression* DN_Cosh(DN_Expression* x);
+DN_Expression* DN_Tanh(DN_Expression* x);
+DN_Expression* DN_Asinh(DN_Expression* x);
+DN_Expression* DN_Acosh(DN_Expression* x);
+DN_Expression* DN_Exp(DN_Expression* x);
+DN_Expression* DN_Square(DN_Expression* x);
+DN_Expression* DN_Cube(DN_Expression* x);
+DN_Expression* DN_LogSigmoid(DN_Expression* x);
+DN_Expression* DN_Lgamma(DN_Expression* x);
+DN_Expression* DN_Log(DN_Expression* x);
+DN_Expression* DN_Logistic(DN_Expression* x);
+DN_Expression* DN_Rectify(DN_Expression* x);
+DN_Expression* DN_Selu(DN_Expression* x);
+DN_Expression* DN_Elu(DN_Expression* x, float alpha);
+DN_Expression* DN_Silu(DN_Expression* x, float beta);
+DN_Expression* DN_Softsign(DN_Expression* x);
+DN_Expression* DN_Pow(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_Min(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_Max(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_MaxArray(DN_Expression* xs[], int num);
+DN_Expression* DN_DotProduct(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_CircConv(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_CircCorr(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_Cmult(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_Cdiv(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_ColwiseAdd(DN_Expression* x, DN_Expression* y);
+
+////////////////////////////////////////////////
+// Probability/loss operations                //
+////////////////////////////////////////////////
+
+DN_Expression* DN_Softmax(DN_Expression* x, unsigned int d);
+DN_Expression* DN_LogsumexpDim(DN_Expression* x, unsigned int d);
+DN_Expression* DN_LogSoftmax(DN_Expression* x);
+DN_Expression* DN_Logsumexp(DN_Expression* xs[], int num);
+DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y);
+
 // -----------------------------------------------------------------------------
 // dynet.h **Basic Done!**
 // Since normally we won't modify CG directly, we don't expose ComputationGraph 
