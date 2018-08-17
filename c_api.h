@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 // -----------------------------------------------------------------------------
 // init.h **Done!**
@@ -176,7 +177,7 @@ DN_ParameterCollection* DN_AddSubCollection(DN_ParameterCollection* pc,
                                             float weight_decay_lambda);
 void DN_SetWeightDecay(DN_ParameterCollection* pc, float lambda);
 float DN_GetWeightDecayLambda(DN_ParameterCollection* pc);
-unsigned long DN_ParameterCollectionSize(DN_ParameterCollection* pc);
+size_t DN_ParameterCollectionSize(DN_ParameterCollection* pc);
 const char* DN_GetParameterCollectionFullName(DN_ParameterCollection* pc);
 
 // -----------------------------------------------------------------------------
@@ -185,10 +186,11 @@ const char* DN_GetParameterCollectionFullName(DN_ParameterCollection* pc);
 typedef struct DN_Expression DN_Expression;
 typedef struct DN_ComputationGraph DN_ComputationGraph; //This is originaly in 'dynet.h'
 
+void DN_DeleteExpression(DN_Expression* e);
 DN_Tensor* DN_GetExprValue(DN_Expression* e);
 DN_Expression* DN_LoadParamToCG(DN_ComputationGraph* cg, DN_Parameter* p);
-DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg, DN_Dim* dim, float* data, unsigned int num);
-void DN_SetInputValueInCG(DN_Expression* e, float* data, unsigned long num);
+DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg, DN_Dim* dim, const float* data, size_t num);
+void DN_SetInputValueInCG(DN_Expression* e, float* data, size_t num);
 
 DN_Expression* DN_Multiply(DN_Expression* x, DN_Expression* y);
 DN_Expression* DN_Logistic(DN_Expression* x);
@@ -215,7 +217,7 @@ DN_Expression* DN_MomentElems(DN_Expression* x, unsigned int r);
 DN_Expression* DN_MomentBatches(DN_Expression* x, unsigned int r);
 DN_Expression* DN_MeanElems(DN_Expression* x);
 DN_Expression* DN_StdElems(DN_Expression* x);
-DN_Expression* DN_SumBatchs(DN_Expression* x);
+DN_Expression* DN_SumBatches(DN_Expression* x);
 DN_Expression* DN_MeanBatches(DN_Expression* x);
 DN_Expression* DN_StdBatches(DN_Expression* x);
 DN_Expression* DN_Cumsum(DN_Expression* x, unsigned int d);
@@ -268,6 +270,7 @@ DN_Expression* DN_LogsumexpDim(DN_Expression* x, unsigned int d);
 DN_Expression* DN_LogSoftmax(DN_Expression* x);
 DN_Expression* DN_Logsumexp(DN_Expression* xs[], int num);
 DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y);
+DN_Expression* DN_SquaredDistance(DN_Expression* x, DN_Expression* y);
 
 // -----------------------------------------------------------------------------
 // dynet.h **Basic Done!**

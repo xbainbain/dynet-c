@@ -1,6 +1,8 @@
 #include "c_api_internal.h"
 #include "c_api.h"
 
+#include <stdbool.h>
+#include <stdlib.h>
 
 #include <vector>
 
@@ -24,7 +26,6 @@
 
 #define DELETE(Name) \
     void DN_Delete##Name(DN_##Name* ptr) { \
-        std::cout << "delete" << std::endl; \
         delete ptr; \
     }
 
@@ -40,14 +41,14 @@
         return new DN_Expression{e}; \
     }
 
-#define OP_LIST(Nmae, Call) \
+#define OP_LIST(Name, Call) \
     DN_Expression* DN_##Name(DN_Expression* xs[], int num) { \
-    std::vector<dynet::Expression> vx; \
-    for (int i = 0; i < num; i++) { \
-        vx.push_back(xs[i]->expr); \
-    } \
-    return new DN_Expression{dynet::Call(vx)}; \
-}
+        std::vector<dynet::Expression> vx; \
+        for (int i = 0; i < num; i++) { \
+            vx.push_back(xs[i]->expr); \
+        } \
+        return new DN_Expression{dynet::Call(vx)}; \
+    }
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -317,7 +318,7 @@ float DN_GetWeightDecayLambda(DN_ParameterCollection* pc) {
 }
 
 
-unsigned long DN_ParameterCollectionSize(DN_ParameterCollection* pc) {
+size_t DN_ParameterCollectionSize(DN_ParameterCollection* pc) {
     return pc->collection.size();
 }
 
@@ -369,6 +370,8 @@ void DN_RevertCG(DN_ComputationGraph* cg) {
 
 // -----------------------------------------------------------------------------
 // expr.h
+DELETE(Expression);
+
 DN_Tensor* DN_GetExprValue(DN_Expression* e) {
     return new DN_Tensor{e->expr.value()};
 }
@@ -381,8 +384,8 @@ DN_Expression* DN_LoadParamToCG(DN_ComputationGraph* cg, DN_Parameter* p) {
 
 DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg,
                                DN_Dim* dim,
-                               float* data,
-                               unsigned int num) {
+                               const float* data,
+                               size_t num) {
     // This implementation has a known issue:change outside array can not change
     // the actual internal value since the new vector copy the data in array!
     // Try to create a new function like 'set' in Python!
@@ -393,7 +396,7 @@ DN_Expression* DN_AddInputToCG(DN_ComputationGraph* cg,
     return new DN_Expression{e};
 }
 
-void DN_SetInputValueInCG(DN_Expression* e, float* vals, unsigned long num) {
+void DN_SetInputValueInCG(DN_Expression* e, float* vals, size_t num) {
     // Don't know if it is the correct way to do that!!!
     // Have a known bug!!! Don't know how to fix it now!
     std::vector<float> vals_vec(vals, vals + num);
@@ -471,7 +474,7 @@ DN_Expression* DN_MomentBatches(DN_Expression* x, unsigned int r) {
 
 OP_UNARY(MeanElems, mean_elems)
 OP_UNARY(StdElems, std_elems)
-OP_UNARY(SumBatchs, sum_batches)
+OP_UNARY(SumBatches, sum_batches)
 OP_UNARY(MeanBatches, mean_batches)
 OP_UNARY(StdBatches, std_batches)
 
@@ -547,6 +550,7 @@ DN_Expression* DN_BinaryLogLoss(DN_Expression* x, DN_Expression* y) {
     return new DN_Expression{e};
 }
 
+OP_BINARY(SquaredDistance, squared_distance)
 
 // -----------------------------------------------------------------------------
 // training.h
