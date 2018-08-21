@@ -177,10 +177,6 @@ void DN_PrintTensor(DN_Tensor* t) {
 // -----------------------------------------------------------------------------
 // model.h **Baisc Done**
 // ** Parameter **
-DN_Parameter* DN_NewParameter() {
-    return new DN_Parameter;
-}
-
 DELETE(Parameter);
 
 const char* DN_GetParameterFullName(DN_Parameter* p) {
@@ -236,6 +232,7 @@ void DN_SetParameterValue(DN_Parameter* p, const float* val, int size) {
 }
 
 // ** LookupParameter **
+DELETE(LookupParameter)
 void DN_ZeroLookupParameter(DN_LookupParameter* lp) {
     lp->param.zero();
 }

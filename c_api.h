@@ -93,7 +93,6 @@ typedef struct DN_LookupParameter DN_LookupParameter;
 typedef struct DN_ParameterCollection DN_ParameterCollection;
 
 // **Parameter**
-DN_Parameter* DN_NewParameter();
 void DN_DeleteParameter(DN_Parameter* p);
 const char* DN_GetParameterFullName(DN_Parameter* p);
 void DN_ZeroParameter(DN_Parameter* p);
@@ -110,6 +109,7 @@ void DN_SetParameterValue(DN_Parameter* p, const float* val, int size);
 
 
 // ** LookupParameter **
+void DN_DeleteLookupParameter(DN_LookupParameter* lp);
 void DN_ZeroLookupParameter(DN_LookupParameter* lp);
 const char* DN_GetLookupParameterFullName(DN_LookupParameter* lp);
 DN_Dim* DN_LookupParameterDim(DN_LookupParameter* lp);
