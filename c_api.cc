@@ -125,7 +125,7 @@ DN_Dim* DN_NewDim() {
     return new DN_Dim;
 }
 
-DN_Dim* DN_NewDimFromArray(const long* a, unsigned int nd, unsigned int b) {
+DN_Dim* DN_NewDimFromArray(const long* a, size_t nd, unsigned int b) {
     // The caller should make sure that the array a is not empty
     dynet::Dim dim{std::vector<long>(a, a + nd), b};
     return new DN_Dim{dim};
@@ -658,6 +658,9 @@ float DN_AmsgradTrainerClipGradients(DN_AmsgradTrainer* trainer) {
 }
 
 
+// -----------------------------------------------------------------------------
 // 
+
+
 
 } // end extern "C"

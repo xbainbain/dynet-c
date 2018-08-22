@@ -65,7 +65,7 @@ DN_Dim* DN_NewDim();
 
 // Create a Dim object from a array of dimensions 'a' and a batch size 'b'
 // 'nd' indicates the length of array
-DN_Dim* DN_NewDimFromArray(const long* a, unsigned int nd, unsigned int b);
+DN_Dim* DN_NewDimFromArray(const long* a, size_t nd, unsigned int b);
 
 void DN_DeleteDim(DN_Dim* d);
 
@@ -372,6 +372,12 @@ float DN_AdagradTrainerClipGradients(DN_AdagradTrainer* trainer);
 float DN_RMSPropTrainerClipGradients(DN_RMSPropTrainer* trainer);
 float DN_AdamTrainerClipGradients(DN_AdamTrainer* trainer);
 float DN_AmsgradTrainerClipGradients(DN_AmsgradTrainer* trainer);
+
+
+// -----------------------------------------------------------------------------
+// rnn.h
+
+
 
 
 #ifdef __cplusplus
