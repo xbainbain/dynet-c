@@ -72,6 +72,21 @@ void DN_DeleteDim(DN_Dim* d);
 // TODO: Other methods for Dim. Should all of them be exposed as c api?
 // Need advice and discussions.
 
+// Total size (Batch size * size of a batch)
+unsigned int DN_DimSize(DN_Dim* d);
+
+// Size of a batch (product of all dimensions)
+unsigned int DN_DimBatchSize(DN_Dim* d);
+
+// Batch dimension.
+unsigned int DN_DimBatchElems(DN_Dim* d);
+
+//Size of dimension i.
+unsigned int DN_DimSizeForIndex(DN_Dim* d, unsigned int i);
+
+// Number of dimensions
+unsigned int DN_DimNumDim(DN_Dim* d);
+
 // -----------------------------------------------------------------------------
 // tensor.h
 

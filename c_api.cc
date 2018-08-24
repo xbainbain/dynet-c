@@ -143,8 +143,16 @@ unsigned int DN_DimBatchSize(DN_Dim* d) {
     return d->dim.batch_size();
 }
 
-unsigned int DN_SumDims(DN_Dim* d) {
-    return d->dim.sum_dims();
+unsigned int DN_DimBatchElems(DN_Dim* d) {
+    return d->dim.batch_elems();
+}
+
+unsigned int DN_DimSizeForIndex(DN_Dim* d, unsigned int i) {
+    return d->dim.size(i);
+}
+
+unsigned int DN_DimNumDim(DN_Dim* d) {
+    return d->dim.nd;
 }
 
 // -----------------------------------------------------------------------------
