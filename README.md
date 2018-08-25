@@ -17,7 +17,7 @@ cd dynet-c
 ```bash
 makdir build
 cd build
-cmake .. --DDYNET_INCLUDE_DIR=/path/to/dynet
+cmake .. -DDYNET_INCLUDE_DIR=/path/to/dynet
 make
 ```
 5. (Optional) Run the example:
