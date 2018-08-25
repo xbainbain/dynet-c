@@ -8,7 +8,9 @@ set(SOURCES c_api.cc)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/examples)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
-add_definitions(-DDYNET_INCLUDED_PATH=${DYNET_INCLUDED_DIR}$)
+if(NOT DEFINED DYNET_INCLUDE_DIR)
+    message(FATAL_ERROR "-- DYNET_INCLUDE_DIR not specified")
+endif()
 
 include_directories(${DYNET_INCLUDE_DIR})
 link_directories(${DYNET_INCLUDE_DIR}/build/dynet)
