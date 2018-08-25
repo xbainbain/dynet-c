@@ -10,13 +10,14 @@
 2. Build **DyNet** library first. Please follow the instruction in section "C++ installation" on [DyNet project page](https://github.com/clab/dynet).
 3. Download this project:
 ```bash
-cd  /path/to/dynet/contrib
 git clone git@github.com:xbainbain/dynet-c.git
 cd dynet-c
 ```  
 4. Build dynet for c and examples with following instruction:
 ```bash
-cmake ./
+makdir build
+cd build
+cmake .. --DDYNET_INCLUDE_DIR=/path/to/dynet
 make
 ```
 5. (Optional) Run the example:
